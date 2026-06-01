@@ -1,0 +1,18 @@
+{
+  "name": "@repo/db",
+  "tasks": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": " deno --env drizzle-kit migrate"
+  },
+  "exports": {
+    ".": "./client.ts",
+    "./schema": "./schema/mod.ts",
+    "./client": "./client.ts"
+  },
+  "imports": {
+    "@types/pg": "npm:@types/pg@^8.20.0",
+    "drizzle-kit": "npm:drizzle-kit@^0.31.10",
+    "drizzle-orm": "npm:drizzle-orm@^0.45.2",
+    "postgres": "npm:postgres@^3.4.9"
+  }
+}
