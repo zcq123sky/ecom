@@ -14,6 +14,9 @@ build/
 supabase/.temp/
 supabase/.branches/
 
+# Supabase Edge Functions local env
+supabase/functions/**/.env
+
 # Environment variables
 .env
 .env.local
@@ -43,3 +46,11 @@ coverage/
 
 # Misc
 *.tsbuildinfo
+
+# monidb out
+packages/monidb/migrations
+
+# AI
+AGENTS.md
+skills-lock.json
+.agents/*

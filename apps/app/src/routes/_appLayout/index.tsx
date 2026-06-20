@@ -1,46 +1,71 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
+import { Header } from '@/components/Header';
+import { ProductDisplay } from '@/components/ProductDisplay';
+import { ControlPanel } from '@/components/ControlPanel';
+import { DispensingArea } from '@/components/DispensingArea';
+import { useProducts } from '@/data/products';
 
 export const Route = createFileRoute('/_appLayout/')({
-  component: IndexPageComponent,
+  component: IndexPage,
 })
 
+function IndexPage() {
+  const { data: products, isLoading } = useProducts();
+  const [amount, setAmount] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
+  const [hasDispensed, setHasDispensed] = useState(false);
+  const [dispensedProduct, setDispensedProduct] = useState<string | undefined>();
 
-function IndexPageComponent() {
+  const handleReturnCoin = () => {
+    setAmount(0);
+  };
+
+  const handlePullLever = () => {
+    if (selectedProduct === null || !products) return;
+    const product = products.find((p) => p.id === selectedProduct);
+    if (!product || amount < product.price) return;
+
+    setAmount((prev) => prev - product.price);
+    setDispensedProduct(product.emoji + ' ' + product.name);
+    setHasDispensed(true);
+    setSelectedProduct(null);
+
+    setTimeout(() => {
+      setHasDispensed(false);
+      setDispensedProduct(undefined);
+    }, 5000);
+  };
+
+  const handleSelectProduct = (id: number) => {
+    setSelectedProduct((prev) => (prev === id ? null : id));
+  };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen text-text-muted">加载中...</div>;
+  }
+
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* 顶部区域 */}
-      <header className="h-16 bg-white border-b border-gray-200 flex items-center px-6">
-        Top Bar
-      </header>
+    <div className="w-[1440px] mx-auto bg-bg-white">
+      <Header />
 
-      {/* 中间区域 */}
-      <main className="flex-1 flex flex-col md:flex-row">
-        {/* 左侧 - 2/3 */}
-        <div className="w-full md:w-2/3 flex-[2] md:flex-auto min-h-0 p-6 bg-gray-50 overflow-y-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/*格子*/}
-            {Array.from({ length: 12 }).map((_, i) => (
+      <div className="flex">
+        <ProductDisplay
+          products={products ?? []}
+          selectedProduct={selectedProduct}
+          onSelectProduct={handleSelectProduct}
+        />
+        <ControlPanel
+          amount={amount}
+          onReturnCoin={handleReturnCoin}
+          onPullLever={handlePullLever}
+        />
+      </div>
 
-              <div
-                key={i}
-                className="bg-white rounded-lg border border-gray-200 flex items-center justify-center text-gray-400"
-              >
-                Item {i + 1}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 右侧 - 1/3 */}
-        <div className="w-full md:w-1/3 flex-[1] md:flex-auto p-6 bg-white md:border-l border-t md:border-t-0 border-gray-200">
-          Right Content
-        </div>
-      </main>
-
-      {/* 底部区域 */}
-      <footer className="h-16 bg-white border-t border-gray-200 flex items-center px-6">
-        Footer
-      </footer>
+      <DispensingArea
+        hasDispensed={hasDispensed}
+        dispensedProduct={dispensedProduct}
+      />
     </div>
-  )
+  );
 }

@@ -1,1 +1,3 @@
-- 我想应该是从route那里出发
+
+// "$db": "./packages/db/client.ts",
+    // "$db/schema": "./packages/db/schema/mod.ts",

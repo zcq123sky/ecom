@@ -1,2 +1,35 @@
 @import "tailwindcss";
 /*@import "@repo/ui/globals.css";*/
+
+@theme {
+  --color-machine-body: #D4743B;
+  --color-machine-body-dark: #B85C2A;
+  --color-machine-body-light: #E89463;
+  --color-machine-accent: #E8C872;
+  --color-machine-accent-dark: #D4A853;
+  --color-machine-frame: #3E2723;
+  --color-machine-inner: #F5E6D3;
+  --color-bg-white: #FFF8E7;
+  --color-outline: #2C1810;
+  --color-text-dark: #1A0F0A;
+  --color-text-muted: #8B7355;
+  --color-text-light-muted: #A09070;
+  --color-lever-handle: #8B4513;
+  --color-lever-light: #A0522D;
+  --color-coin-slot: #2C1810;
+  --color-product-drink: #2A9D8F;
+  --color-product-snack: #E07A2F;
+  --color-product-toy: #C75B7A;
+  --color-product-goods: #7B5EA7;
+  --color-button-default: #E8D5B7;
+  --color-screw-brass: #C4A97D;
+  --color-slot-dark: #5C3A21;
+  --color-slot-text: #8B6914;
+  --font-family-main: "Inter", sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: #FFF8E7;
+}

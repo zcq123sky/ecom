@@ -1,32 +1,36 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import { beverageRoutes } from "./routes/beverage.ts";
+import { snackRoutes } from "./routes/snack.ts";
+import { toyRoutes } from "./routes/toy.ts";
+import { appRouter } from "./trpc/router.ts";
 
-// Setup type definitions for built-in Supabase Runtime APIs
-import "@supabase/functions-js/edge-runtime.d.ts"
+const app = new Hono();
+app.use("/api/*", cors());
+app.get("/api/test", (c) => c.text("Hello from test!"));
 
-console.log("Hello from Functions!")
+// REST 路由
+app.route("/api/beverage", beverageRoutes);
+app.route("/api/snack", snackRoutes);
+app.route("/api/toy", toyRoutes);
 
-Deno.serve(async (req) => {
-  const { name } = await req.json()
-  const data = {
-    message: `Hello ${name}!`,
-  }
+// tRPC — 直接透传，无需 URL 重写
+app.all("/api/trpc", (c) =>
+  fetchRequestHandler({
+    endpoint: "/api/trpc",
+    req: c.req.raw,
+    router: appRouter,
+    createContext: () => ({}),
+  }),
+);
+app.all("/api/trpc/*", (c) =>
+  fetchRequestHandler({
+    endpoint: "/api/trpc",
+    req: c.req.raw,
+    router: appRouter,
+    createContext: () => ({}),
+  }),
+);
 
-  return new Response(
-    JSON.stringify(data),
-    { headers: { "Content-Type": "application/json" } },
-  )
-})
-
-/* To invoke locally:
-
-  1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
-  2. Make an HTTP request:
-
-  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/api' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' \
-    --header 'Content-Type: application/json' \
-    --data '{"name":"Functions"}'
-
-*/
+export default app;

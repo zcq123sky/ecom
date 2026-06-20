@@ -9,7 +9,6 @@ export const Route = createFileRoute('/_appLayout')({
 function AppLayoutComponent() {
   return (
     <div>
-
       <div>
         <Outlet />
       </div>
