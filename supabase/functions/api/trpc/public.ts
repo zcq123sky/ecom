@@ -3,18 +3,17 @@ import { TRPCError } from "@trpc/server";
 import { db } from "monidb/client";
 import { eq } from "drizzle-orm";
 import { beverage, snack, toy } from "monidb/schema";
-import { beverageSchemas } from "../schemas/beverage.ts";
-import { snackSchemas } from "../schemas/snack.ts";
-import { toySchemas } from "../schemas/toy.ts";
 import { publicProcedure, router } from "./context.ts";
 
-function entityRouter(table: any, idColumn: any, schemas: { purchase: typeof beverageSchemas.purchase }) {
+const purchaseSchema = z.object({ id: z.number().int().positive(), quantity: z.number().int().positive() });
+
+function entityRouter(table: any, idColumn: any) {
   return router({
     list: publicProcedure.query(() => db.select().from(table)),
     byId: publicProcedure.input(z.number()).query(({ input }) =>
       db.select().from(table).where(eq(idColumn, input)).then((r) => r[0] ?? null)
     ),
-    purchase: publicProcedure.input(schemas.purchase).mutation(async ({ input }) => {
+    purchase: publicProcedure.input(purchaseSchema).mutation(async ({ input }) => {
       const { id, quantity } = input;
       const items = await db.select().from(table).where(eq(idColumn, id));
       if (items.length === 0) {
@@ -34,7 +33,7 @@ function entityRouter(table: any, idColumn: any, schemas: { purchase: typeof bev
 }
 
 export const publicRouter = router({
-  beverage: entityRouter(beverage, beverage.id, beverageSchemas),
-  snack: entityRouter(snack, snack.id, snackSchemas),
-  toy: entityRouter(toy, toy.id, toySchemas),
+  beverage: entityRouter(beverage, beverage.id),
+  snack: entityRouter(snack, snack.id),
+  toy: entityRouter(toy, toy.id),
 });

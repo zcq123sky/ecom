@@ -8,60 +8,28 @@ import { snackSchemas } from "../schemas/snack.ts";
 import { toySchemas } from "../schemas/toy.ts";
 import { adminProcedure, router } from "./context.ts";
 
-const B = beverage as any;
-const S = snack as any;
-const T = toy as any;
+function entityRouter(table: any, idColumn: any, schemas: { create: z.ZodTypeAny; update: z.ZodTypeAny }) {
+  return router({
+    create: adminProcedure.input(schemas.create).mutation(({ input }) =>
+      db.insert(table).values(input).returning().then((r) => r[0])
+    ),
+    update: adminProcedure.input(schemas.update).mutation(({ input }) =>
+      db.update(table).set((input as any).data).where(eq(idColumn, (input as any).id)).returning().then((r) => {
+        if (r.length === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Item not found" });
+        return r[0];
+      })
+    ),
+    delete: adminProcedure.input(z.number().int().positive()).mutation(({ input }) =>
+      db.delete(table).where(eq(idColumn, input)).returning().then((r) => {
+        if (r.length === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Item not found" });
+        return r[0];
+      })
+    ),
+  });
+}
 
 export const adminRouter = router({
-  beverage: router({
-    create: adminProcedure.input(beverageSchemas.create).mutation(({ input }) =>
-      db.insert(B).values(input).returning().then((r) => r[0])
-    ),
-    update: adminProcedure.input(beverageSchemas.update).mutation(({ input }) =>
-      db.update(B).set((input as any).data).where(eq(B.id, (input as any).id)).returning().then((r) => {
-        if (r.length === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Item not found" });
-        return r[0];
-      })
-    ),
-    delete: adminProcedure.input(z.number().int().positive()).mutation(({ input }) =>
-      db.delete(B).where(eq(B.id, input)).returning().then((r) => {
-        if (r.length === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Item not found" });
-        return r[0];
-      })
-    ),
-  }),
-  snack: router({
-    create: adminProcedure.input(snackSchemas.create).mutation(({ input }) =>
-      db.insert(S).values(input).returning().then((r) => r[0])
-    ),
-    update: adminProcedure.input(snackSchemas.update).mutation(({ input }) =>
-      db.update(S).set((input as any).data).where(eq(S.id, (input as any).id)).returning().then((r) => {
-        if (r.length === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Item not found" });
-        return r[0];
-      })
-    ),
-    delete: adminProcedure.input(z.number().int().positive()).mutation(({ input }) =>
-      db.delete(S).where(eq(S.id, input)).returning().then((r) => {
-        if (r.length === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Item not found" });
-        return r[0];
-      })
-    ),
-  }),
-  toy: router({
-    create: adminProcedure.input(toySchemas.create).mutation(({ input }) =>
-      db.insert(T).values(input).returning().then((r) => r[0])
-    ),
-    update: adminProcedure.input(toySchemas.update).mutation(({ input }) =>
-      db.update(T).set((input as any).data).where(eq(T.id, (input as any).id)).returning().then((r) => {
-        if (r.length === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Item not found" });
-        return r[0];
-      })
-    ),
-    delete: adminProcedure.input(z.number().int().positive()).mutation(({ input }) =>
-      db.delete(T).where(eq(T.id, input)).returning().then((r) => {
-        if (r.length === 0) throw new TRPCError({ code: "NOT_FOUND", message: "Item not found" });
-        return r[0];
-      })
-    ),
-  }),
+  beverage: entityRouter(beverage, beverage.id, { create: beverageSchemas.create, update: beverageSchemas.update }),
+  snack: entityRouter(snack, snack.id, { create: snackSchemas.create, update: snackSchemas.update }),
+  toy: entityRouter(toy, toy.id, { create: toySchemas.create, update: toySchemas.update }),
 });
