@@ -1,19 +1,16 @@
 /**
- * @moly/api-types — tRPC AppRouter type + entity interfaces for ecom frontend.
+ * @moly/motype — tRPC AppRouter type + entity interfaces for ecom frontend.
  *
  * This package exports the AppRouter type that createTRPCReact<AppRouter>()
- * needs. The type is defined via a fake tRPC router (never executed at runtime)
- * to guarantee 100% type compatibility with tRPC v11 inference.
- *
- * Entity interfaces are also exported for convenience.
+ * needs. Uses a fake tRPC router (never executed) for 100% type compatibility.
  */
 
 import { initTRPC } from "@trpc/server";
 
 // ── Helpers ──
 
-function type<T>() {
-  return { parse: (_x: unknown) => _x as T };
+function type<T>(): { parse: (x: unknown) => T } {
+  return { parse: (x: unknown) => x as T };
 }
 
 // ── Entity types (mirrors monidb schema) ──
@@ -117,43 +114,44 @@ export interface PurchaseInput {
 
 // ── AppRouter type (fake router, never executed) ──
 
-const t = initTRPC.create();
+function defineRouter() {
+  const t = initTRPC.create();
+  return t.router({
+    public: t.router({
+      beverage: t.router({
+        list: t.procedure.query(() => ({}) as Beverage[]),
+        byId: t.procedure.input(type<number>()).query(() => ({}) as Beverage | null),
+        purchase: t.procedure.input(type<PurchaseInput>()).mutation(() => ({}) as Beverage),
+      }),
+      snack: t.router({
+        list: t.procedure.query(() => ({}) as Snack[]),
+        byId: t.procedure.input(type<number>()).query(() => ({}) as Snack | null),
+        purchase: t.procedure.input(type<PurchaseInput>()).mutation(() => ({}) as Snack),
+      }),
+      toy: t.router({
+        list: t.procedure.query(() => ({}) as Toy[]),
+        byId: t.procedure.input(type<number>()).query(() => ({}) as Toy | null),
+        purchase: t.procedure.input(type<PurchaseInput>()).mutation(() => ({}) as Toy),
+      }),
+    }),
+    admin: t.router({
+      beverage: t.router({
+        create: t.procedure.input(type<CreateBeverage>()).mutation(() => ({}) as Beverage),
+        update: t.procedure.input(type<UpdateBeverage>()).mutation(() => ({}) as Beverage),
+        delete: t.procedure.input(type<number>()).mutation(() => ({}) as Beverage),
+      }),
+      snack: t.router({
+        create: t.procedure.input(type<CreateSnack>()).mutation(() => ({}) as Snack),
+        update: t.procedure.input(type<UpdateSnack>()).mutation(() => ({}) as Snack),
+        delete: t.procedure.input(type<number>()).mutation(() => ({}) as Snack),
+      }),
+      toy: t.router({
+        create: t.procedure.input(type<CreateToy>()).mutation(() => ({}) as Toy),
+        update: t.procedure.input(type<UpdateToy>()).mutation(() => ({}) as Toy),
+        delete: t.procedure.input(type<number>()).mutation(() => ({}) as Toy),
+      }),
+    }),
+  });
+}
 
-const _appRouter = t.router({
-  public: t.router({
-    beverage: t.router({
-      list: t.procedure.query(() => ({}) as Beverage[]),
-      byId: t.procedure.input(type<number>()).query(() => ({}) as Beverage | null),
-      purchase: t.procedure.input(type<PurchaseInput>()).mutation(() => ({}) as Beverage),
-    }),
-    snack: t.router({
-      list: t.procedure.query(() => ({}) as Snack[]),
-      byId: t.procedure.input(type<number>()).query(() => ({}) as Snack | null),
-      purchase: t.procedure.input(type<PurchaseInput>()).mutation(() => ({}) as Snack),
-    }),
-    toy: t.router({
-      list: t.procedure.query(() => ({}) as Toy[]),
-      byId: t.procedure.input(type<number>()).query(() => ({}) as Toy | null),
-      purchase: t.procedure.input(type<PurchaseInput>()).mutation(() => ({}) as Toy),
-    }),
-  }),
-  admin: t.router({
-    beverage: t.router({
-      create: t.procedure.input(type<CreateBeverage>()).mutation(() => ({}) as Beverage),
-      update: t.procedure.input(type<UpdateBeverage>()).mutation(() => ({}) as Beverage),
-      delete: t.procedure.input(type<number>()).mutation(() => ({}) as Beverage),
-    }),
-    snack: t.router({
-      create: t.procedure.input(type<CreateSnack>()).mutation(() => ({}) as Snack),
-      update: t.procedure.input(type<UpdateSnack>()).mutation(() => ({}) as Snack),
-      delete: t.procedure.input(type<number>()).mutation(() => ({}) as Snack),
-    }),
-    toy: t.router({
-      create: t.procedure.input(type<CreateToy>()).mutation(() => ({}) as Toy),
-      update: t.procedure.input(type<UpdateToy>()).mutation(() => ({}) as Toy),
-      delete: t.procedure.input(type<number>()).mutation(() => ({}) as Toy),
-    }),
-  }),
-});
-
-export type AppRouter = typeof _appRouter;
+export type AppRouter = ReturnType<typeof defineRouter>;
