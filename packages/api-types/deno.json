@@ -1,0 +1,11 @@
+{
+  "name": "@moly/api-types",
+  "version": "0.1.0",
+  "license": "MIT",
+  "exports": {
+    ".": "./mod.ts"
+  },
+  "imports": {
+    "@trpc/server": "npm:@trpc/server@^11.1.3"
+  }
+}
