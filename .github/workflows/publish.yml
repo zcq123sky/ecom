@@ -2,7 +2,8 @@ name: Publish
 on:
   push:
     tags:
-      - "v*"
+      - "monidb-v*"
+      - "motype-v*"
 
 jobs:
   publish:
@@ -12,7 +13,17 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v6
-      - name: Publish monidb
-        run: npx jsr publish --dir ./packages/monidb
-      - name: Publish motype
-        run: npx jsr publish --dir ./packages/motype
+      - name: Determine package
+        id: get-pkg
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          if [[ $TAG == monidb-v* ]]; then
+            echo "dir=./packages/monidb" >> $GITHUB_OUTPUT
+          elif [[ $TAG == motype-v* ]]; then
+            echo "dir=./packages/motype" >> $GITHUB_OUTPUT
+          else
+            exit 1
+          fi
+      - name: Publish
+        working-directory: ${{ steps.get-pkg.outputs.dir }}
+        run: npx jsr publish
