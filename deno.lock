@@ -2429,14 +2429,6 @@
           "npm:zod@^3.24.5"
         ]
       },
-      "packages/db": {
-        "dependencies": [
-          "npm:@types/pg@^8.20.0",
-          "npm:drizzle-kit@~0.31.10",
-          "npm:drizzle-orm@~0.45.2",
-          "npm:postgres@^3.4.9"
-        ]
-      },
       "packages/monidb": {
         "dependencies": [
           "npm:@types/pg@^8.20.0",

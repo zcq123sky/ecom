@@ -1,7 +1,8 @@
 {
   "name": "app",
   "tasks": {
-    "dev": "vite"
+    "dev": "vite",
+    "build": "vite build"
   },
   "exports": {},
   "imports": {

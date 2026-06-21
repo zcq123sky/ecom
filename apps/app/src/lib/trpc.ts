@@ -1,6 +1,6 @@
 import { createTRPCReact } from "@trpc/react-query";
 import { httpBatchLink } from "@trpc/client";
-import type { AppRouter } from "../../../supabase/functions/api/trpc/router.ts";
+import type { AppRouter } from "../../../../supabase/functions/api/trpc/router.ts";
 
 const API_BASE = import.meta.env.VITE_SUPABASE_URL
   ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/api`
