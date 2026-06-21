@@ -1,0 +1,22 @@
+{
+  "description": "pubilc but not commom,truth is my db package",
+  "name": "@moly/monidb",
+  "version": "0.2.6",
+  "license": "MIT",
+  "tasks": {
+    "db:generate": "deno -A --env drizzle-kit generate",
+    "db:migrate": " deno -A --env drizzle-kit migrate",
+    "db:seed": "deno -A --env seed.ts"
+  },
+  "exports": {
+    ".": "./mod.ts",
+    "./schema": "./schema/mod.ts",
+    "./client": "./client.ts"
+  },
+  "imports": {
+    "@types/pg": "npm:@types/pg@^8.20.0",
+    "drizzle-kit": "npm:drizzle-kit@^0.31.10",
+    "drizzle-orm": "npm:drizzle-orm@^0.45.2",
+    "postgres": "npm:postgres@^3.4.9"
+  }
+}

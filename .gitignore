@@ -48,7 +48,7 @@ coverage/
 *.tsbuildinfo
 
 # monidb out
-packages/monidb/migrations
+# packages/monidb/migrations
 
 # AI
 AGENTS.md
