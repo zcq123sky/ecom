@@ -26,4 +26,4 @@ jobs:
           fi
       - name: Publish
         working-directory: ${{ steps.get-pkg.outputs.dir }}
-        run: npx jsr publish
+        run: npx jsr publish --allow-slow-types
