@@ -7,4 +7,4 @@ DENO_VERSION="v2.8.1"  # 你可以改成你本地使用的 Deno 版本
 curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=./deno sh -s $DENO_VERSION
 
 # 2. 使用安装好的 Deno 运行你的构建任务（读取 deno.json 中的 build 任务）
-./deno/bin/deno -A task build
+./deno/bin/deno task build
