@@ -1,7 +1,7 @@
 {
   "description": "pubilc but not commom,truth is my db package",
   "name": "@moly/monidb",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "license": "MIT",
   "tasks": {
     "db:generate": "deno -A --env drizzle-kit generate",
