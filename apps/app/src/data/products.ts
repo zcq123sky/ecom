@@ -42,9 +42,9 @@ function transform(item: any): Product {
 }
 
 export function useProducts() {
-  const beverages = trpc.beverage.list.useQuery();
-  const snacks = trpc.snack.list.useQuery();
-  const toys = trpc.toy.list.useQuery();
+  const beverages = trpc.public.beverage.list.useQuery();
+  const snacks = trpc.public.snack.list.useQuery();
+  const toys = trpc.public.toy.list.useQuery();
 
   const isLoading = beverages.isLoading || snacks.isLoading || toys.isLoading;
   const data = [

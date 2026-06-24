@@ -5,7 +5,7 @@ interface DispensingAreaProps {
 
 export function DispensingArea({ hasDispensed, dispensedProduct }: DispensingAreaProps) {
   return (
-    <div className="w-full bg-machine-inner border-3 border-outline flex" style={{ minHeight: 360 }}>
+    <div className="w-full bg-machine-inner border-3 border-t-0 border-outline flex" style={{ minHeight: 360 }}>
       {/* Left: Dispensing Slot */}
       <div className="w-[1040px] flex flex-col items-center justify-center gap-4 py-10 border-r-2 border-outline">
         <span className="text-slot-dark text-base font-bold">↓ 商品掉落区 ↓</span>
@@ -24,7 +24,7 @@ export function DispensingArea({ hasDispensed, dispensedProduct }: DispensingAre
       </div>
 
       {/* Right: Brand Info */}
-      <div className="w-[400px] flex flex-col items-center justify-center gap-4">
+      <div className="w-[400px] bg-machine-frame flex flex-col items-center justify-center gap-4">
         <span className="text-machine-body text-3xl font-bold">VENDY</span>
         <div className="w-20 h-0.5 bg-machine-accent border border-outline" />
         <span className="text-slot-dark text-base font-bold">客服热线 400-123-4567</span>

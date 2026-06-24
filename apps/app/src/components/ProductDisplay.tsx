@@ -16,22 +16,19 @@ export function ProductDisplay({ products, selectedProduct, onSelectProduct }: P
   ];
 
   return (
-    <div className="relative w-[1040px] bg-machine-inner border-3 border-outline rounded-t-xl p-6 flex flex-col gap-4"
-      style={{ boxShadow: '8px 8px 0 0 rgba(0,0,0,0.2)' }}
-    >
+    <div className="relative w-[1040px] bg-machine-inner border-3 border-b-0 border-outline p-6 flex flex-col gap-4 justify-center">
       <Screw className="top-2.5 left-2.5" />
       <Screw className="top-2.5 right-2.5" />
       <Screw className="bottom-2.5 left-2.5" />
       <Screw className="bottom-2.5 right-2.5" />
 
-      <div className="absolute inset-4 border-2 border-outline rounded pointer-events-none" />
-
       {rows.map((row, ri) => (
-        <div key={ri} className="flex gap-2.5 justify-center">
-          {row.map((product) => (
+        <div key={ri} className="flex gap-4 justify-center">
+          {row.map((product, ci) => (
             <ProductCard
               key={product.id}
               product={product}
+              label={`${['A','B','C'][ri]}${ci + 1}`}
               onSelect={onSelectProduct}
               isSelected={selectedProduct === product.id}
             />

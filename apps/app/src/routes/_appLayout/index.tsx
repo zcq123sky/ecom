@@ -17,6 +17,10 @@ function IndexPage() {
   const [hasDispensed, setHasDispensed] = useState(false);
   const [dispensedProduct, setDispensedProduct] = useState<string | undefined>();
 
+  const handleInsertCoin = () => {
+    setAmount((prev) => prev + 1);
+  };
+
   const handleReturnCoin = () => {
     setAmount(0);
   };
@@ -49,7 +53,7 @@ function IndexPage() {
     <div className="w-[1440px] mx-auto bg-bg-white">
       <Header />
 
-      <div className="flex">
+      <div className="flex min-h-[calc(100vh-80px)]">
         <ProductDisplay
           products={products ?? []}
           selectedProduct={selectedProduct}
@@ -57,8 +61,9 @@ function IndexPage() {
         />
         <ControlPanel
           amount={amount}
-          onReturnCoin={handleReturnCoin}
+          onInsertCoin={handleInsertCoin}
           onPullLever={handlePullLever}
+          onReturnCoin={handleReturnCoin}
         />
       </div>
 
