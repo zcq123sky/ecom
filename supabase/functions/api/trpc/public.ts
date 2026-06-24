@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { db } from "monidb/client";
+import { getDb } from "monidb/client";
 import { eq } from "drizzle-orm";
 import { beverage, snack, toy } from "monidb/schema";
 import { publicProcedure, router } from "./context.ts";
@@ -9,13 +9,13 @@ const purchaseSchema = z.object({ id: z.number().int().positive(), quantity: z.n
 
 function entityRouter(table: any, idColumn: any) {
   return router({
-    list: publicProcedure.query(() => db.select().from(table)),
+    list: publicProcedure.query(() => getDb().select().from(table)),
     byId: publicProcedure.input(z.number()).query(({ input }) =>
-      db.select().from(table).where(eq(idColumn, input)).then((r) => r[0] ?? null)
+      getDb().select().from(table).where(eq(idColumn, input)).then((r) => r[0] ?? null)
     ),
     purchase: publicProcedure.input(purchaseSchema).mutation(async ({ input }) => {
       const { id, quantity } = input;
-      const items = await db.select().from(table).where(eq(idColumn, id));
+      const items = await getDb().select().from(table).where(eq(idColumn, id));
       if (items.length === 0) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Item not found" });
       }
@@ -26,7 +26,7 @@ function entityRouter(table: any, idColumn: any) {
           message: `Insufficient stock: available ${item.stock}, requested ${quantity}`,
         });
       }
-      const updated = await db.update(table).set({ stock: item.stock - quantity }).where(eq(idColumn, id)).returning();
+      const updated = await getDb().update(table).set({ stock: item.stock - quantity }).where(eq(idColumn, id)).returning();
       return updated[0];
     }),
   });

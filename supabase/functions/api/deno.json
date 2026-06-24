@@ -1,6 +1,6 @@
 {
   "imports": {
-    "monidb": "jsr:@moly/monidb@^0.2.6",
+    "monidb/": "../../packages/monidb/",
     "@supabase/functions-js": "jsr:@supabase/functions-js@^2",
     "drizzle-orm": "npm:drizzle-orm@^0.45.2",
     "hono": "npm:hono@^4.12.23",
