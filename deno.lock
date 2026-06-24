@@ -2429,6 +2429,11 @@
           "npm:zod@^3.24.5"
         ]
       },
+      "packages/locotype": {
+        "dependencies": [
+          "npm:@trpc/server@^11.1.3"
+        ]
+      },
       "packages/monidb": {
         "dependencies": [
           "npm:@types/pg@^8.20.0",

@@ -5,19 +5,19 @@ import { appRouter } from "./trpc/router.ts";
 import { createContext } from "./trpc/context.ts";
 
 const app = new Hono();
-app.use("/api/*", cors());
+app.use("*", cors());
 
-app.all("/api/trpc", (c) =>
+app.all("/trpc", (c) =>
   fetchRequestHandler({
-    endpoint: "/api/trpc",
+    endpoint: "/trpc",
     req: c.req.raw,
     router: appRouter,
     createContext: () => createContext(c.req.raw),
   }),
 );
-app.all("/api/trpc/*", (c) =>
+app.all("/trpc/*", (c) =>
   fetchRequestHandler({
-    endpoint: "/api/trpc",
+    endpoint: "/trpc",
     req: c.req.raw,
     router: appRouter,
     createContext: () => createContext(c.req.raw),
